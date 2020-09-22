@@ -11,23 +11,22 @@ It's a timezone project for a Mintbean hackathon.
   - Type "npm start", and let the scripts run
   - Open a browser to localhost:1234
 
+## Tools this app uses:
+  Getting map data from Gmaps
+  ( https://maps.googleapis.com/maps/api )
+  
+  Getting timezone from lat/lng from Gmaps
+  ( https://stackoverflow.com/questions/16086962/how-to-get-a-time-zone-from-a-location-using-latitude-and-longitude-coordinates/16086964#answer-32437518 )
+
+  Getting time from timezone from 
+  momentJS
+
 
 - - - 
 
 
 to-do:
 
-- get data from momentJS...
-- get data from gmaps...
-
-- on click, 
-  - add marker to appropriate lat/lng
-  - add a location to the list of locations for times
-
-  Getting map data from Gmaps
-  ( https://maps.googleapis.com/maps/api )
-  
-  Getting timezone from lat/lng from Teleport
-  ( https://stackoverflow.com/questions/16086962/how-to-get-a-time-zone-from-a-location-using-latitude-and-longitude-coordinates/16086964 )
-
-  Getting time from timezone from 
+- sync up time with actual clock?
+- remove the duplicate entry on load?
+- add an about section

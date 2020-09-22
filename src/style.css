@@ -1,0 +1,8 @@
+.glyphicon:hover,
+.glyphicon:before:hover {
+  cursor: pointer;
+}
+
+span.glyphicon.glyphicon-remove:hover {
+  cursor: pointer;
+}

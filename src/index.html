@@ -10,9 +10,68 @@
     <div id="googleMap" style="width: 100%; height: 400px"></div>
 
     <div id="demo">Test</div>
+
+    <div id="locations"></div>
   </body>
+
   <script>
     var mapProp, map;
+
+    function addMarker(lat, lng) {
+      console.log("adding marker... at ", lat, lng);
+
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(lat, lng),
+        map: map,
+      });
+
+      // to remove a marker:
+      // marker.setMap(null);
+      // we gotta save these markers to an array on a larger scope
+      // to retain that pointer so we can do that later tho
+    }
+
+    function addListItem(lat, lng, tz) {
+      console.log("adding list item to HTML");
+
+      var listItem = document.createElement("li");
+      listItem.innerHTML = `<div style="display: flex;">
+        <p>${lat}, ${lng}</p>
+        <b>${tz}</b>
+      </div>`;
+
+      console.log(document.getElementById("locations"));
+
+      document.getElementById("locations").appendChild(listItem);
+    }
+
+    function addLocation(lat, lng, tz) {
+      addMarker(lat, lng);
+      addListItem(lat, lng, tz);
+    }
+
+    function handleClick(event) {
+      console.log("handleClick...");
+
+      var lat = event.latLng.lat();
+      var lng = event.latLng.lng();
+
+      fetch(
+        `https://api.teleport.org/api/locations/${lat},${lng}/?embed=location:nearest-cities/location:nearest-city/city:timezone/tz:offsets-now%20|%20jq%20%27._embedded.%22location:nearest-cities%22[0]._embedded.%22location:nearest-city%22._embedded.%22city:timezone%22%27`
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          var tz =
+            data._embedded["location:nearest-cities"][0]._embedded[
+              "location:nearest-city"
+            ]._embedded["city:timezone"].iana_name;
+          console.log(tz);
+
+          addLocation(lat, lng, tz);
+        });
+    }
 
     function myMap() {
       mapProp = {
@@ -22,60 +81,8 @@
       map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
       getLocation();
 
-      google.maps.event.addListener(map, "click", function (event) {
-        console.log(event);
-
-        fetch(
-          // `https://maps.googleapis.com/maps/api/timezone/json?location=38.908133,-77.047119&timestamp=1458000000&key=AIzaSyAxtd2uJWYRCK-Mm8lcJyoBKq7E5s1chZs`
-          // `https://api.askgeo.com/v1/2277/98f5c4ddbc1e68545f62aaaba786c6e9f8e37a11b74c5b5734228149aaa5f73f/query.json?points=37.78%2C-122.42%3B40.71%2C-74.01&databases=Point%2CTimeZone%2CAstronomy%2CNaturalEarthCountry%2CUsState2010%2CUsCounty2010%2CUsCountySubdivision2010%2CUsTract2010%2CUsBlockGroup2010%2CUsPlace2010%2CUsZcta2010`
-          `https://api.teleport.org/api/locations/59.4372,24.7453/?embed=location:nearest-cities/location:nearest-city/city:timezone/tz:offsets-now%20|%20jq%20%27._embedded.%22location:nearest-cities%22[0]._embedded.%22location:nearest-city%22._embedded.%22city:timezone%22%27`
-        )
-          .then(function (response) {
-            // The response is a Response instance.
-            // You parse the data into a useable format using `.json()`
-            return response.json();
-          })
-          .then(function (data) {
-            console.log(
-              data._embedded["location:nearest-cities"][0]._embedded[
-                "location:nearest-city"
-              ]._embedded["city:timezone"].iana_name
-            );
-          });
-
-        console.log(event.latLng.lat());
-        console.log(event.latLng.lng());
-      });
-      google.maps.event.addListener(map, "touchstart", function (event) {
-        console.log(event);
-        console.log("fetch attempt...");
-        fetch(
-          `https://api.teleport.org/api/locations/59.4372,24.7453/?embed=location:nearest-cities/location:nearest-city/city:timezone/tz:offsets-now%20|%20jq%20%27._embedded.%22location:nearest-cities%22[0]._embedded.%22location:nearest-city%22._embedded.%22city:timezone%22%27`
-        )
-          .then(function (response) {
-            return response.json();
-          })
-          .then(function (data) {
-            console.log(
-              data._embedded["location:nearest-cities"][0]._embedded[
-                "location:nearest-city"
-              ]._embedded["city:timezone"].iana_name
-            );
-          });
-        // fetch(
-        //   `https://api.teleport.org/api/locations/${event.latLng.lat()},${event.latLng.lng()}/?embed=location:nearest-cities/location:nearest-city/city:timezone/tz:offsets-now%20|%20jq%20%27._embedded.%22location:nearest-cities%22[0]._embedded.%22location:nearest-city%22._embedded.%22city:timezone%22%27`
-        // )
-        //   .then((res) => {
-        //     // console.log(res);
-        //     res.json();
-        //   })
-        //   .then((data) => {
-        //     console.log(data);
-        //   });
-        console.log(event.latLng.lat());
-        console.log(event.latLng.lng());
-        // marker = new google.maps.Marker({position: event.latLng, map: map});
-      });
+      google.maps.event.addListener(map, "click", handleClick);
+      google.maps.event.addListener(map, "touchstart", handleClick);
     }
 
     var x = document.getElementById("demo");
@@ -103,26 +110,11 @@
       );
     }
 
-    // Function for adding a marker to the page.
-    function addMarker(location) {
-      marker = new google.maps.Marker({
-        position: location,
-        map: map,
-      });
-    }
-
-    // Testing the addMarker function
-    function TestMarker() {
-      CentralPark = new google.maps.LatLng(37.7699298, -122.4469157);
-      addMarker(CentralPark);
-    }
-
     var d = new Date();
     var n = d.getTime();
 
     console.log(n);
   </script>
-
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxtd2uJWYRCK-Mm8lcJyoBKq7E5s1chZs&callback=myMap"></script>
   <script src="./index.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxtd2uJWYRCK-Mm8lcJyoBKq7E5s1chZs&callback=myMap"></script>
 </html>

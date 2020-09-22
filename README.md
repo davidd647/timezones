@@ -23,3 +23,11 @@ to-do:
 - on click, 
   - add marker to appropriate lat/lng
   - add a location to the list of locations for times
+
+  Getting map data from Gmaps
+  ( https://maps.googleapis.com/maps/api )
+  
+  Getting timezone from lat/lng from Teleport
+  ( https://stackoverflow.com/questions/16086962/how-to-get-a-time-zone-from-a-location-using-latitude-and-longitude-coordinates/16086964 )
+
+  Getting time from timezone from 

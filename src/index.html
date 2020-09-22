@@ -3,8 +3,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Timezones</title>
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap/dist/css/bootstrap.css"
+    />
+    <link
+      href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="./style.css" rel="stylesheet" />
   </head>
-  <body>
+  <body class="p-2">
     Timezones
 
     <div id="googleMap" style="width: 100%; height: 400px"></div>
@@ -15,5 +24,6 @@
   </body>
 
   <script src="./index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.11.5/polyfill.min.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxtd2uJWYRCK-Mm8lcJyoBKq7E5s1chZs"></script>
 </html>

@@ -184,8 +184,6 @@ document.addEventListener("DOMContentLoaded", function () {
       // var minutes = timeString.substr(2, 3);
       // var seconds = timeString.substr(5, 6);
 
-      console.log({ hours, minutes, seconds });
-
       seconds += minutes * 60 + hours * 60 * 60;
 
       return seconds;
@@ -206,8 +204,8 @@ document.addEventListener("DOMContentLoaded", function () {
       seconds = Math.round(seconds * 100) / 100;
 
       var result = hours < 10 ? "0" + hours : hours;
-      result += "-" + (minutes < 10 ? "0" + minutes : minutes);
-      result += "-" + (seconds < 10 ? "0" + seconds : seconds);
+      result += ":" + (minutes < 10 ? "0" + minutes : minutes);
+      result += ":" + (seconds < 10 ? "0" + seconds : seconds);
       return result;
     },
 
@@ -215,7 +213,6 @@ document.addEventListener("DOMContentLoaded", function () {
       var plugin = this;
       setInterval(() => {
         var iterables = document.querySelectorAll(".timer-iterator");
-        // console.log(iterables);
         iterables.forEach((iterable) => {
           var timeNow = iterable.innerHTML;
           var seconds = plugin.hhmmssToSeconds(timeNow);

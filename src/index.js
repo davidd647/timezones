@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     addListItem(lat, lng, tz) {
-      // console.log("adding list item to HTML");
       // this.d = new Date();
       // this.n = this.d.getTime();
 
@@ -28,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
       listItem.classList.add("card");
       listItem.innerHTML = `<div style="display: flex; justify-content: space-between;">
         <p class="pr-2">Lat: ${Math.round(lat)}, Lng: ${Math.round(lng)}</p>
-        <b class="pl-2">${tz}</b>
+        <b class="pl-2 timer-iterator">${tz}</b>
         <b class="pl-2"></b>
         <span class="glyphicon glyphicon-remove"></span>
       </div>`;
@@ -41,11 +40,9 @@ document.addEventListener("DOMContentLoaded", function () {
       elLocations.innerHTML = "";
 
       this.locations.forEach((location, i) => {
-        console.log(location);
-
         var locationCard = document.createElement("div");
         locationCard.classList.add("card");
-        console.log("i: ", i);
+
         locationCard.id = i;
 
         locationCard.innerHTML = `<div style="display: flex; justify-content: space-between;">
@@ -53,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
           location.lng
         )}</p>
             <b class="pl-2">${location.tz}</b>
-            <b class="pl-2">${location.time}</b>
+            <b class="pl-2 timer-iterator">${location.time}</b>
             <span class="glyphicon glyphicon-remove"></span>
           </div>`;
 
@@ -68,9 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       deleteIcons.forEach((deleteIcon) => {
         deleteIcon.addEventListener("click", function (e) {
-          console.log(e);
-          console.log(e.target.parentNode.parentNode.id);
-          console.log(plugin);
           plugin.locations[e.target.parentNode.parentNode.id].marker.setMap(
             null
           );
@@ -118,28 +112,23 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     async handleClick(event) {
-      console.log("handleClick...");
-
       var plugin = this;
 
       var lat = event.latLng.lat();
       var lng = event.latLng.lng();
 
       let tz = await this.getTimeZone(lat, lng).then((tz) => {
-        // console.log("tz from gettiemzone", tz);
         plugin.addLocation(lat, lng, tz);
       });
     },
 
     async showPosition(position) {
-      // console.log("showPosition: this is ", this);
       this.x.innerHTML =
         "Latitude: " +
         position.coords.latitude +
         "<br>Longitude: " +
         position.coords.longitude;
 
-      // console.log(this.map);
       this.map.setCenter(
         new google.maps.LatLng(
           position.coords.latitude,
@@ -158,7 +147,6 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     getLocation() {
-      console.log(this);
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(this.showPosition.bind(this));
       } else {
@@ -189,10 +177,60 @@ document.addEventListener("DOMContentLoaded", function () {
       );
     },
 
+    hhmmssToSeconds(timeString) {
+      var hours = parseInt(timeString.substr(0, 2));
+      var minutes = parseInt(timeString.substr(3, 2));
+      var seconds = parseInt(timeString.substr(6, 2));
+      // var minutes = timeString.substr(2, 3);
+      // var seconds = timeString.substr(5, 6);
+
+      console.log({ hours, minutes, seconds });
+
+      seconds += minutes * 60 + hours * 60 * 60;
+
+      return seconds;
+    },
+
+    // secondsToHhmmss(timeString) {
+    //   var timeNow =
+    //   return timeNow;
+    // },
+
+    // this method is from: http://jsfiddle.net/StevenIseki/apg8yx1s
+    secondsToHhmmss(totalSeconds) {
+      var hours = Math.floor(totalSeconds / 3600);
+      var minutes = Math.floor((totalSeconds - hours * 3600) / 60);
+      var seconds = totalSeconds - hours * 3600 - minutes * 60;
+
+      // round seconds
+      seconds = Math.round(seconds * 100) / 100;
+
+      var result = hours < 10 ? "0" + hours : hours;
+      result += "-" + (minutes < 10 ? "0" + minutes : minutes);
+      result += "-" + (seconds < 10 ? "0" + seconds : seconds);
+      return result;
+    },
+
+    iterator() {
+      var plugin = this;
+      setInterval(() => {
+        var iterables = document.querySelectorAll(".timer-iterator");
+        // console.log(iterables);
+        iterables.forEach((iterable) => {
+          var timeNow = iterable.innerHTML;
+          var seconds = plugin.hhmmssToSeconds(timeNow);
+          seconds++;
+          timeNow = plugin.secondsToHhmmss(seconds);
+          iterable.innerHTML = timeNow;
+        });
+      }, 1000);
+    },
+
     init() {
       var myLocation = this.getLocation();
-      console.log("myLocation: ", myLocation);
+
       this.myMap(myLocation); // this calls getLocation... should it?
+      this.iterator();
     },
   };
 

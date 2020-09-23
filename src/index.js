@@ -24,11 +24,12 @@ document.addEventListener("DOMContentLoaded", function () {
       this.locations.forEach((location, i) => {
         var locationCard = document.createElement("div");
         locationCard.classList.add("card");
+        locationCard.classList.add("p-2");
 
         locationCard.id = i;
 
         locationCard.innerHTML = `
-          <p>
+          <p class="d-flex justify-content-between">
             <span>
             ${i == 0 ? "Home: " : `Location #${i + 1}`}
             </span>
@@ -36,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
               Latitude: ${Math.round(location.lat)},
               Longitude: ${Math.round(location.lng)}
             </span>
+            <span class="glyphicon glyphicon-remove"></span>
           </p>
 
           <p>
@@ -51,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <div class="d-flex justify-content-center">
             <img src="${location.gifUrl}" style="max-height: 100px;">
           </div>
-          <span class="glyphicon glyphicon-remove"></span>
+          
         `;
 
         elLocations.appendChild(locationCard);
@@ -83,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(trailingString);
 
       return await fetch(
-        "http://api.giphy.com/v1/gifs/search?q=" +
+        "https://api.giphy.com/v1/gifs/search?q=" +
           trailingString +
           "&api_key=h5CX8Mt5sGAv3iMQ0OqmPRqK6Xf0Ed1n&limit=1"
       )
@@ -146,11 +148,11 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     async showPosition(position) {
-      this.x.innerHTML =
-        "Latitude: " +
-        position.coords.latitude +
-        "<br>Longitude: " +
-        position.coords.longitude;
+      // this.x.innerHTML =
+      //   "Latitude: " +
+      //   position.coords.latitude +
+      //   "<br>Longitude: " +
+      //   position.coords.longitude;
 
       this.map.setCenter(
         new google.maps.LatLng(

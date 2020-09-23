@@ -17,24 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
       );
     },
 
-    addListItem(lat, lng, tz) {
-      // this.d = new Date();
-      // this.n = this.d.getTime();
-
-      // var newLocationTime = moment(this.n).tz(tz).format("hh:mm:ss"); //format: "ha z"
-
-      var listItem = document.createElement("div");
-      listItem.classList.add("card");
-      listItem.innerHTML = `<div style="display: flex; justify-content: space-between;">
-        <p class="pr-2">Lat: ${Math.round(lat)}, Lng: ${Math.round(lng)}</p>
-        <b class="pl-2 timer-iterator">${tz}</b>
-        <b class="pl-2"></b>
-        <span class="glyphicon glyphicon-remove"></span>
-      </div>`;
-
-      document.getElementById("locations").appendChild(listItem);
-    },
-
     displayListItems() {
       var elLocations = document.getElementById("locations");
       elLocations.innerHTML = "";
@@ -45,14 +27,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
         locationCard.id = i;
 
-        locationCard.innerHTML = `<div style="display: flex; justify-content: space-between;">
-            <p class="pr-2">Lat: ${Math.round(location.lat)}, Lng: ${Math.round(
-          location.lng
-        )}</p>
-            <b class="pl-2">${location.tz}</b>
+        locationCard.innerHTML = `
+          <p>
+            <span>
+            ${i == 0 ? "Home: " : `Location #${i + 1}`}
+            </span>
+            <span>
+              Latitude: ${Math.round(location.lat)},
+              Longitude: ${Math.round(location.lng)}
+            </span>
+          </p>
+
+          <p>
+            Time: 
             <b class="pl-2 timer-iterator">${location.time}</b>
-            <span class="glyphicon glyphicon-remove"></span>
-          </div>`;
+          </p>
+
+          <p>
+            Time zone: 
+            ${location.tz}
+          </p>
+          
+          <div class="d-flex justify-content-center">
+            <img src="${location.gifUrl}" style="max-height: 100px;">
+          </div>
+          <span class="glyphicon glyphicon-remove"></span>
+        `;
 
         elLocations.appendChild(locationCard);
       });
@@ -65,10 +65,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       deleteIcons.forEach((deleteIcon) => {
         deleteIcon.addEventListener("click", function (e) {
-          plugin.locations[e.target.parentNode.parentNode.id].marker.setMap(
-            null
-          );
-          plugin.locations.splice(e.target.parentNode.parentNode.id, 1);
+          plugin.locations[e.target.parentNode.id].marker.setMap(null);
+          plugin.locations.splice(e.target.parentNode.id, 1);
 
           plugin.displayListItems();
           plugin.deletionEventListeners();
@@ -79,13 +77,38 @@ document.addEventListener("DOMContentLoaded", function () {
       // var elLocations = document.getElementById("locations");
     },
 
-    addLocation(lat, lng, tz) {
+    getGif: async function (tz) {
+      var indexOfSlash = tz.indexOf("/");
+      var trailingString = tz.slice(indexOfSlash + 1);
+      console.log(trailingString);
+
+      return await fetch(
+        "http://api.giphy.com/v1/gifs/search?q=" +
+          trailingString +
+          "&api_key=h5CX8Mt5sGAv3iMQ0OqmPRqK6Xf0Ed1n&limit=1"
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          var smallGif = data.data[0].images.fixed_height.url;
+          return smallGif;
+        });
+    },
+
+    addLocation: async function (lat, lng, tz) {
       var d = new Date();
       var n = d.getTime();
 
       var time = moment(n).tz(tz).format("hh:mm:ss"); //format: "ha z"
       // var time = 0;
-      this.locations.push({ lat, lng, tz, time });
+
+      console.log();
+      var gifUrl = await this.getGif(tz);
+      // var gifUrl = await this.getGif(tz);
+      // console.log("gifUrl: ", gifUrl);
+
+      this.locations.push({ lat, lng, tz, time, gifUrl });
       this.addMarker(lat, lng);
       // this.addListItem(lat, lng, tz);
 
@@ -155,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     myMap() {
-      this.getLocation();
+      // this.getLocation();
       this.mapProp = {
         center: new google.maps.LatLng(51.508742, -0.12085),
         zoom: 2,

@@ -67,8 +67,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
       deleteIcons.forEach((deleteIcon) => {
         deleteIcon.addEventListener("click", function (e) {
-          plugin.locations[e.target.parentNode.id].marker.setMap(null);
-          plugin.locations.splice(e.target.parentNode.id, 1);
+          console.log(e.target.parentNode.parentNode);
+          plugin.locations[e.target.parentNode.parentNode.id].marker.setMap(
+            null
+          );
+          plugin.locations.splice(e.target.parentNode.parentNode.id, 1);
 
           plugin.displayListItems();
           plugin.deletionEventListeners();
@@ -214,11 +217,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return seconds;
     },
 
-    // secondsToHhmmss(timeString) {
-    //   var timeNow =
-    //   return timeNow;
-    // },
-
     // this method is from: http://jsfiddle.net/StevenIseki/apg8yx1s
     secondsToHhmmss(totalSeconds) {
       var hours = Math.floor(totalSeconds / 3600);
@@ -258,7 +256,3 @@ document.addEventListener("DOMContentLoaded", function () {
 
   timeZones.init();
 });
-
-// to-do:
-// use descriptive variable names
-// clean up

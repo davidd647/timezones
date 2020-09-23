@@ -67,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       deleteIcons.forEach((deleteIcon) => {
         deleteIcon.addEventListener("click", function (e) {
-          console.log(e.target.parentNode.parentNode);
           plugin.locations[e.target.parentNode.parentNode.id].marker.setMap(
             null
           );
@@ -85,7 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
     getGif: async function (tz) {
       var indexOfSlash = tz.indexOf("/");
       var trailingString = tz.slice(indexOfSlash + 1);
-      console.log(trailingString);
 
       return await fetch(
         "https://api.giphy.com/v1/gifs/search?q=" +
@@ -105,6 +103,10 @@ document.addEventListener("DOMContentLoaded", function () {
       var d = new Date();
       var n = d.getTime();
 
+      if (tz === undefined) {
+        alert("Please choose an inland area");
+        return;
+      }
       var time = moment(n).tz(tz).format("hh:mm:ss"); //format: "ha z"
       // var time = 0;
 
@@ -131,10 +133,14 @@ document.addEventListener("DOMContentLoaded", function () {
           return response.json();
         })
         .then(function (data) {
-          tz =
-            data._embedded["location:nearest-cities"][0]._embedded[
-              "location:nearest-city"
-            ]._embedded["city:timezone"].iana_name;
+          try {
+            tz =
+              data._embedded["location:nearest-cities"][0]._embedded[
+                "location:nearest-city"
+              ]._embedded["city:timezone"].iana_name;
+          } catch (error) {
+            tz = undefined;
+          }
         });
       return tz;
     },

@@ -2,7 +2,7 @@
 
 ## What is this?
 
-It's a timezone project for a Mintbean hackathon.
+It's a timezone project for a Mintbean hackathon. If you'd like to preview it, here it is: https://suspicious-pasteur-d9b922.netlify.app/
 
 ## How do I run it on my machine?
 - Download the repo

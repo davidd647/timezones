@@ -30,9 +30,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         locationCard.innerHTML = `
           <p class="d-flex justify-content-between">
-            <span>
-            ${i == 0 ? "Home: " : `Location #${i + 1}`}
-            </span>
+            <b>
+              ${i == 0 ? "Home: " : `Location #${i + 1}`}
+            </b>
             <span>
               Latitude: ${Math.round(location.lat)},
               Longitude: ${Math.round(location.lng)}
@@ -40,18 +40,22 @@ document.addEventListener("DOMContentLoaded", function () {
             <span class="glyphicon glyphicon-remove"></span>
           </p>
 
-          <p>
-            Time: 
-            <b class="pl-2 timer-iterator">${location.time}</b>
-          </p>
+          <div class="d-flex justify-content-between">
+            <div>
+              <p>
+                Time: <br>
+                <b class="timer-iterator">${location.time}</b>
+              </p>
 
-          <p>
-            Time zone: 
-            ${location.tz}
-          </p>
-          
-          <div class="d-flex justify-content-center">
-            <img src="${location.gifUrl}" style="max-height: 100px;">
+              <p>
+                Time zone: <br>
+                ${location.tz}
+              </p>
+            </div>
+            
+            <div class="d-flex justify-content-center">
+              <img src="${location.gifUrl}" style="max-height: 100px;">
+            </div>
           </div>
           
         `;

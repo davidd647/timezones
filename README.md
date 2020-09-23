@@ -27,6 +27,4 @@ It's a timezone project for a Mintbean hackathon.
 
 to-do:
 
-- sync up time with actual clock?
-- remove the duplicate entry on load?
-- add an about section
+- increase time accuracy

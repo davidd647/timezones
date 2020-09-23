@@ -54,7 +54,11 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
             
             <div class="d-flex justify-content-center">
-              <img src="${location.gifUrl}" style="max-height: 100px;">
+              ${
+                location.gifUrl !== undefined
+                  ? `<img src="${location.gifUrl}" style="max-height: 100px;">`
+                  : ""
+              }
             </div>
           </div>
           
@@ -98,7 +102,12 @@ document.addEventListener("DOMContentLoaded", function () {
           return response.json();
         })
         .then(function (data) {
-          var smallGif = data.data[0].images.fixed_height.url;
+          var smallGif;
+          try {
+            smallGif = data.data[0].images.fixed_height.url;
+          } catch (error) {
+            smallGif = undefined;
+          }
           return smallGif;
         });
     },
@@ -108,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var n = d.getTime();
 
       if (tz === undefined) {
-        alert("Please choose an inland area");
+        alert("Please choose an area near a city.");
         return;
       }
       var time = moment(n).tz(tz).format("hh:mm:ss"); //format: "ha z"
